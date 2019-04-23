@@ -27,52 +27,46 @@ if (isset($_GET['reference'])){
 		
 		<form method="POST">
 <table>
+	<caption>Modifier Produit</caption>
 	<input type="hidden" name="id"  >
-<caption>Modifier Produit</caption>
+
  <div class="form-group">
-<tr>
-<td>Référence</td>
-<td><input type="text" name="reference" value="<?PHP echo $reference ?>" style="border-radius: 5px; width: 30% "required ></td>
-</tr>
+<br>
+<label>Référence</label>
+<input type="text" name="reference" id="reference" value="<?PHP echo $reference ?>" style="border-radius: 5px; width: 30% "required ><span id="missreference"></span>
 </div>
  <div class="form-group">
-<tr>
-<td>Nom</td>
-<td><input type="text" name="nom" value="<?PHP echo $nom ?>" style="border-radius: 5px; width: 30% "required ></td>
-</tr>
+<label>Nom</label>
+<input type="text" name="nom" id="nom" value="<?PHP echo $nom ?>" style="border-radius: 5px; width: 30% "required ><span id="missnom"></span>
 </div>
  <div class="form-group">
-<tr>
-<td>Categorie</td>
-<td> <select name="categorie" style="border-radius: 5px;width: 30% " id="categorie" value="<?PHP echo $categorie ?>" required>
+
+<label>Categorie</label>
+ <select name="categorie" style="border-radius: 5px;width: 30% " id="categorie" value="<?PHP echo $categorie ?>" required>
 					<option>corps</option>
 					<option>visage</option>
 					<option>cheveux</option>
-					</select></td>
-</tr>
+					</select>
+			</div>
+ <div class="form-group">
+<label>Prix</label>
+<input type="text" name="prix" id="prix" value="<?PHP echo $prix ?>" style="border-radius: 5px; width: 30% "required ><span id="missprix"></span>
 </div>
  <div class="form-group">
-<tr>
-<td>Prix</td>
-<td><input type="number" name="prix" value="<?PHP echo $prix ?>" style="border-radius: 5px; width: 30% "required ></td>
-</tr>
+
+<label>Quantite</label>
+<input type="text" id="quantite" name="quantite" value="<?PHP echo $quantite ?>" style="border-radius: 5px; width: 30% "required ><span id="missquantite"></span>
+
 </div>
  <div class="form-group">
-<tr>
-<td>Quantite</td>
-<td><input type="text" name="quantite" value="<?PHP echo $quantite ?>" style="border-radius: 5px; width: 30% "required ></td>
-</tr>
-</div>
- <div class="form-group">
-<tr>
-<td>Image</td>
-<td><input type="file" name="image"> </td>
-</tr>
+
+<label>Image</label>
+<input type="file" name="image">
 </div>
  <div class="form-group">
 <tr>
 <td></td>
-<td><input type="submit" name="modifier" value="modifier" class="btn btn-primary"></td>
+<td><button type="submit" name="modifier" class="btn btn-primary" id="bouton_modif">Modifier</button></td>
 </tr>
 </div>
  <div class="form-group"> </div>
@@ -98,6 +92,111 @@ if (isset($_POST['modifier'])){
 	//header('Location : afficherProduit.php');
 }
 ?>
+
+<script>
+            var formValid = document.getElementById('bouton_modif');
+
+
+             var reference = document.getElementById('reference');
+            var missreference = document.getElementById('missreference');
+            var referenceValid = /^[0-9\s]+$/;
+		    var nom = document.getElementById('categorie');
+            var misscategorie = document.getElementById('misscategorie');
+            var categorieValid = /^[a-zA-Zéèêî][a-zéèêîçà]+([-'\s][a-zA-Zéèêî][a-zéèêîçà]+)?/;
+		    var nom = document.getElementById('nom');
+            var missnom = document.getElementById('missnom');
+            var nomValid = /^[a-zA-Zéèêî][a-zéèêîçà]+([-'\s][a-zA-Zéèêî][a-zéèêîçà]+)?/;
+            var prix = document.getElementById('prix');
+            var missprix = document.getElementById('missprix');
+            var prixValid = /^[0-9\s]+$/;
+            var quantite = document.getElementById('quantite');
+            var missquantite = document.getElementById('missquantite');
+            var quantiteValid = /^[1-9\s][0-9]+$/;
+		   
+		   
+             formValid.addEventListener('click', validationreference);
+            
+            function validationreference(event){
+                //Si le champ est vide
+                if (reference.validity.valueMissing){
+                    event.preventDefault();
+                    missreference.textContent = 'Référence manquant';
+                    missreference.style.color = 'red';
+                //Si le format de données est incorrect
+                }else if (referenceValid.test(reference.value) == false){
+                    event.preventDefault();
+                    missreference.textContent = 'Format incorrect';
+                    missreference.style.color = 'orange';
+                }else{   }
+
+
+		   }
+
+
+		    formValid.addEventListener('click', validationnom);
+            
+            function validationnom(event){
+                //Si le champ est vide
+                if (nom.validity.valueMissing){
+                    event.preventDefault();
+                    missnom.textContent = 'Nom manquant';
+                    missnom.style.color = 'red';
+                //Si le format de données est incorrect
+                }else if (nomValid.test(nom.value) == false){
+                    event.preventDefault();
+                    missnom.textContent = 'Format incorrect';
+                    missnom.style.color = 'orange';
+                }else{   }
+            }
+
+		   	formValid.addEventListener('click', validationcategorie);
+            
+            function validationcategorie(event){
+                //Si le champ est vide
+                if (categorie.validity.valueMissing){
+                    event.preventDefault();
+                    misscategorie.textContent = 'Nom manquant';
+                    misscategorie.style.color = 'red';
+                //Si le format de données est incorrect
+                }else if (categorieValid.test(categorie.value) == false){
+                    event.preventDefault();
+                    misscategorie.textContent = 'Format incorrect';
+                    misscategorie.style.color = 'orange';
+                }else{   }
+            }
+		   
+            
+            formValid.addEventListener('click', validationprix);
+            
+            function validationprix(event){
+                //Si le champ est vide
+                if (prix.validity.valueMissing){
+                    event.preventDefault();
+                    missprix.textContent = 'Prix manquant';
+                    missprix.style.color = 'red';
+                //Si le format de données est incorrect
+                }else if (prixValid.test(prix.value) == false){
+                    event.preventDefault();
+                    missprix.textContent = 'Format incorrect';
+                    missprix.style.color = 'orange';
+                }else{   }
+            }
+		formValid.addEventListener('click', validationquantite);
+		function validationquantite(event){
+                //Si le champ est vide
+                if (quantite.validity.valueMissing){
+                    event.preventDefault();
+                    missquantite.textContent = 'quantite manquant';
+                    missquantite.style.color = 'red';
+                //Si le format de données est incorrect
+                }else if (quantiteValid.test(quantite.value) == false){
+                    event.preventDefault();
+                    missquantite.textContent = 'Format incorrect';
+                    missquantite.style.color = 'orange';
+                }else{ 
+                }
+            }
+        </script>
 <!--
 Author: W3layouts
 Author URL: http://w3layouts.com
@@ -203,7 +302,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 										<li><a href="indexb.php"><i class="fa fa-tachometer"></i> <span>Home</span></a></li>
 										<li id="menu-academico" ><a href="#"><i class="fa fa-table"></i> <span> Gestion des Produits</span> <span class="fa fa-angle-right" style="float: right"></span></a>
 										   <ul id="menu-academico-sub" >
-										   <li id="menu-academico-avaliacoes" ><a href="ajoutProduit.html">Ajouter Produit</a></li>
+										   <li id="menu-academico-avaliacoes" ><a href="ajouterProduit.php">Ajouter Produit</a></li>
 											<li id="menu-academico-avaliacoes" ><a href="afficherProduit.php">Afficher Produits</a></li>
 											
 										  </ul>

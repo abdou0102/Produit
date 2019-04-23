@@ -235,6 +235,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 												?>
 											
 											<div class="item">
+												<img src="../images/<?PHP echo $row['image']; ?>"  height="50px" width="50px">
 												<?PHP echo ($row['nom']); ?><br>
 												<?php echo ($row['categorie']);?>
 												
@@ -758,7 +759,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 										<li><a href="indexb.php"><i class="fa fa-tachometer"></i> <span>Home</span></a></li>
 										  <li id="menu-academico" ><a href="#"><i class="fa fa-table"></i> <span> Gestion des Produits</span> <span class="fa fa-angle-right" style="float: right"></span></a>
 										   <ul id="menu-academico-sub" >
-										   <li id="menu-academico-avaliacoes" ><a href="ajoutProduit.html">Ajouter Produit</a></li>
+										   <li id="menu-academico-avaliacoes" ><a href="ajouterProduit.php">Ajouter Produit</a></li>
 											<li id="menu-academico-avaliacoes" ><a href="afficherProduit.php">Afficher Produits</a></li>
 											
 										  </ul>

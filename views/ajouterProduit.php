@@ -106,7 +106,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			<div> 
 				<div >
 		    	<h4>
-				<a href="index.html">Home > </a>
+				<a href="indexb.php">Home > </a>
 				
 				<span>Validation</span>
 				</h4>
@@ -123,49 +123,48 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <?PHP
 include "../core/categorieC.php";
 $categorie1C=new categorieC();
-$listeCategorie=$produit1C->afficherCategories();
+$listeCategories=$categorie1C->afficherCategories();
 
+?>
 	   
-?>  
-	   
-	   
+	
     <div class="container">
 		
 		<form method="POST" action="ajoutProduit.php">
-			
 			<table>
-				<?PHP
-foreach($listeCategorie as $row){
-	?>
 				<input type="hidden" name="id"  >
 			  <div class="form-group">
 					<label>Réference : </label>
 					<input type="text" id="reference" name="reference" placeholder=" Saisir Référence " style="border-radius: 5px;width: 30% " >
-				   <span id="reference"></span><br>
+				   <span id="missreference"></span><br>
 				</div>
 				
 				<div class="form-group" >
 					<label>Nom : </label>
-					<input type="text" id="nom" name="nom" placeholder="  Saisir Nom " style="border-radius: 5px;width: 30% "  >
+					<input type="text" id="nom" name="nom" placeholder="  Saisir Nom " style="border-radius: 5px;width: 30% "  required><span id="missnom"></span><br>
 				 
 				</div>
 				
 				<div class="form-group">
 					<label>Categorie : </label>
 					
-					<select>
-						<option><?PHP echo ($row['nomC']); ?> </option>
-					</select>
-					
-			</div>
+				  <select name="categorie" style="border-radius: 5px;width: 30% " id="categorie" required>
+					<?PHP
+					foreach($listeCategories as $row){
+					?>
+						<option value="<?PHP echo $row['nomC']; ?>"><?PHP echo $row['nomC']; ?>
+						</option>
+						<?PHP } ?>
+					</select><span id="misscategorie"></span><br>
+				</div>
 				<div class="form-group">
 					<label>Prix : </label>
-				  <input  type="text" id="prix" name="prix"  placeholder="saisir date de  disponobilité " style="border-radius: 5px; width: 30% "required >
+				  <input  type="text" id="prix" name="prix"  placeholder="saisir Prix " style="border-radius: 5px; width: 30% "required >
 					 <span id="missprix"></span><br>
 				</div>
 			<div class="form-group">
 					<label>Quantité : </label>
-				  <input  type="text"  id="quantite" name="quantite" placeholder="saisir Quantité" style="border-radius: 5px; width: 30% "required >
+				  <input  type="text"  id="quantite" name="quantite" min="1" placeholder="saisir Quantité" style="border-radius: 5px; width: 30% "required >
 				 <span id="missquantite"></span><br>	
 			</div>
 			
@@ -178,13 +177,11 @@ foreach($listeCategorie as $row){
 			
 			<div class="form-group">
 				
-					
+									
 					<button type="submit" class="btn btn-primary" name="ajouter" id="bouton_envoi">Ajouter</button>
+					<button type="submit" class="btn btn-primary" name="mail">mail</button>
 				
 				</div>
-					<?PHP
-}
-?>
 </table>
 			</form>
 		
@@ -192,12 +189,73 @@ foreach($listeCategorie as $row){
 	   
 	   <script>
             var formValid = document.getElementById('bouton_envoi');
+            var reference = document.getElementById('reference');
+            var missreference = document.getElementById('missreference');
+            var referenceValid = /^[0-9\s]+$/;
+		    var nom = document.getElementById('categorie');
+            var misscategorie = document.getElementById('misscategorie');
+            var categorieValid = /^[a-zA-Zéèêî][a-zéèêîçà]+([-'\s][a-zA-Zéèêî][a-zéèêîçà]+)?/;
+		    var nom = document.getElementById('nom');
+            var missnom = document.getElementById('missnom');
+            var nomValid = /^[a-zA-Zéèêî][a-zéèêîçà]+([-'\s][a-zA-Zéèêî][a-zéèêîçà]+)?/;
             var prix = document.getElementById('prix');
             var missprix = document.getElementById('missprix');
             var prixValid = /^[0-9\s]+$/;
             var quantite = document.getElementById('quantite');
             var missquantite = document.getElementById('missquantite');
-            var quantiteValid = /^[0-9\s]+$/;
+            var quantiteValid = /^[1-9\s][0-9]+$/;
+
+            
+             formValid.addEventListener('click', validationreference);
+            
+            function validationreference(event){
+                //Si le champ est vide
+                if (reference.validity.valueMissing){
+                    event.preventDefault();
+                    missreference.textContent = 'Référence manquant';
+                    missreference.style.color = 'red';
+                //Si le format de données est incorrect
+                }else if (referenceValid.test(reference.value) == false){
+                    event.preventDefault();
+                    missreference.textContent = 'Format incorrect';
+                    missreference.style.color = 'orange';
+                }else{   }
+
+
+		   }
+		   
+		    formValid.addEventListener('click', validationnom);
+            
+            function validationnom(event){
+                //Si le champ est vide
+                if (nom.validity.valueMissing){
+                    event.preventDefault();
+                    missnom.textContent = 'Nom manquant';
+                    missnom.style.color = 'red';
+                //Si le format de données est incorrect
+                }else if (nomValid.test(nom.value) == false){
+                    event.preventDefault();
+                    missnom.textContent = 'Format incorrect';
+                    missnom.style.color = 'orange';
+                }else{   }
+            }
+
+		   	formValid.addEventListener('click', validationcategorie);
+            
+            function validationcategorie(event){
+                //Si le champ est vide
+                if (categorie.validity.valueMissing){
+                    event.preventDefault();
+                    misscategorie.textContent = 'Nom manquant';
+                    misscategorie.style.color = 'red';
+                //Si le format de données est incorrect
+                }else if (categorieValid.test(categorie.value) == false){
+                    event.preventDefault();
+                    misscategorie.textContent = 'Format incorrect';
+                    misscategorie.style.color = 'orange';
+                }else{   }
+            }
+		   
             
             formValid.addEventListener('click', validationprix);
             
@@ -237,7 +295,7 @@ foreach($listeCategorie as $row){
 				<div class="sidebar-menu">
 					
 					<div class="logo">
-										<a href="index.html"><img src="images/logo99.png" class="img-responsive" alt=""> </a>
+										<a href="indexb.php"><img src="images/logo99.png" class="img-responsive" alt=""> </a>
 									</div>
 					<header class="logo1">
 						
@@ -247,15 +305,21 @@ foreach($listeCategorie as $row){
 					<br><br><br><br>
                            <div class="menu">
 									<ul id="menu" >
-										<li><a href="index.html"><i class="fa fa-tachometer"></i> <span>Home</span></a></li>
-										 <li id="menu-academico" ><a href="#"><i class="fa fa-table"></i> <span> New Arrivals</span> <span class="fa fa-angle-right" style="float: right"></span></a>
+										<li><a href="indexb.php"><i class="fa fa-tachometer"></i> <span>Home</span></a></li>
+										 <li id="menu-academico" ><a href="#"><i class="fa fa-table"></i> <span> Gestion des Produits</span> <span class="fa fa-angle-right" style="float: right"></span></a>
 										   <ul id="menu-academico-sub" >
-										   <li id="menu-academico-avaliacoes" ><a href="shoes.html">Shoes</a></li>
-											<li id="menu-academico-avaliacoes" ><a href="products.html">Watches</a></li>
-											<li id="menu-academico-boletim" ><a href="sunglasses.html">Sunglasses</a></li>
+										   <li id="menu-academico-avaliacoes" ><a href="ajouterProduit.php">Ajouter Produit</a></li>
+											<li id="menu-academico-avaliacoes" ><a href="afficherProduit.php">Afficher Produits</a></li>
+											
 										  </ul>
 										</li>
-										 <li id="menu-academico" ><a href="sunglasses.html"><i class="fa fa-file-text-o"></i> <span>Sunglasses</span></a></li>
+										 <li id="menu-academico" ><a href="#"><i class="fa fa-table"></i> <span> Gestion Catégories</span> <span class="fa fa-angle-right" style="float: right"></span></a>
+										   <ul id="menu-academico-sub" >
+										   <li id="menu-academico-avaliacoes" ><a href="ajoutCategorie.html">Ajouter Categorie</a></li>
+											<li id="menu-academico-avaliacoes" ><a href="afficherCategorie.php">Afficher Catégorie</a></li>
+											
+										  </ul>
+										</li>
 									<li><a href="sweater.html"><i class="lnr lnr-pencil"></i> <span>Sweater</span></a></li>
 									<li id="menu-academico" ><a href="catalog.html"><i class="fa fa-file-text-o"></i> <span>Catalog</span></a></li>
 									<li id="menu-academico" ><a href="shoes.html"><i class="lnr lnr-book"></i> <span>Shoes</span></a></li>

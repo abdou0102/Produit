@@ -120,11 +120,33 @@ include "../entities/produit.php";
 include "../core/produitC.php";
 
 $produit1C=new produitC();
-$listeProduit=$produit1C->afficherProduits();
+	   $db=config::getconnexion();
+	   if(isset($_POST['tri']))
+	   {
+		   $listeProduit=$db->query("SElECT * From produit order by prix");
+	   }
+	   	else   if(isset($_POST['triA']))
+	   {
+		   $listeProduit=$db->query("SElECT * From produit order by prix DESC ");
+	   }
+	   else $listeProduit=$produit1C->afficherProduits();
 
 	   
 ?>
 <div class="container">
+	<form action = "verifform.php" method = "get">
+                                            <input type = "search" name = "terme">
+                                          
+                                      
+                                       <input  type = "submit" name = "s" value="Rechercher">
+                                           
+                                        </form>
+
+	<form method="post">
+		<div>
+	<button type="submit" name="tri" class="fa fa-arrow-circle-o-up"></button>
+	<button type="submit" name="triA" class="fa fa-arrow-circle-o-down"></button></div></form>
+		
 <div id="content">
 <table id="content" class="table" >
 <tr>
@@ -158,7 +180,7 @@ foreach($listeProduit as $row){
 	<td><p><?PHP echo ($row['prix']); ?></p></td>
 	<td><p><?PHP echo ($row['quantite']); ?></p></td>
 	<td><p><?php echo  $row['prix'] * $row['quantite'] ?></p></td>
-	<td><img src="images/11.jpg" height="50px" width="50px"></td>
+	<td><img src="../images/<?PHP echo $row['image']; ?>"  height="70px" width="70px"></td>
 	
 	
 	<td><form method="POST" action="supprimerProduit.php">
@@ -174,9 +196,11 @@ foreach($listeProduit as $row){
 ?>
 </table>
 
-		<a href="ajoutProduit.html" class="btn btn-primary">Ajouter</a>
-  	<button class="btn btn-primary" id="cmd">generate PDF</button>
-		
+		<a href="ajouterProduit.php" class="btn btn-primary">Ajouter</a>
+  	<a href="mail.php" class="btn btn-primary" >Envoie Mail</a>
+	<a href="impression.php" class="btn btn-primary" >Imprimer</a>
+	                               
+
 
 	   </div>
 		</div>
@@ -197,7 +221,7 @@ foreach($listeProduit as $row){
 										<li><a href="indexb.php"><i class="fa fa-tachometer"></i> <span>Home</span></a></li>
 										<li id="menu-academico" ><a href="#"><i class="fa fa-table"></i> <span> Gestion des Produits</span> <span class="fa fa-angle-right" style="float: right"></span></a>
 										   <ul id="menu-academico-sub" >
-										   <li id="menu-academico-avaliacoes" ><a href="ajoutProduit.html">Ajouter Produit</a></li>
+										   <li id="menu-academico-avaliacoes" ><a href="ajouterProduit.php">Ajouter Produit</a></li>
 											<li id="menu-academico-avaliacoes" ><a href="afficherProduit.php">Afficher Produits</a></li>
 											
 										  </ul>
@@ -221,12 +245,32 @@ foreach($listeProduit as $row){
 
 										  </ul>
 									 </li>
-									<li><a href="#"><i class="lnr lnr-chart-bars"></i> <span>Forms</span> <span class="fa fa-angle-right" style="float: right"></span></a>
-									  <ul>
-										<li><a href="input.html"> Input</a></li>
-										<li><a href="validation.html">Validation</a></li>
-									</ul>
-									</li>
+										<li><a href="#"><i class="lnr lnr-chart-bars"></i> <span>Services</span> <span class="fa fa-angle-right" style="float: right"></span></a>
+					<ul>
+						<li><a href="web/web.html"> webs</a>
+						</li>
+						<li><a href="web/soins.html">Soins</a>
+						</li>
+					</ul>
+				</li>
+				</li>
+				<li id="menu-academico"><a><i class="fa fa-table"></i> <span> Employes</span> <span class="fa fa-angle-right" style="float: right"></span></a>
+					<ul id="menu-academico-sub">
+						<li id="menu-academico-avaliacoes"><a href="../elyes/BO/views/afficherEmploye.php">Afficher les employes</a>
+						</li>
+						<li id="menu-academico-avaliacoes"><a href="../elyes/BO/views/ajoutEmployeP.php">Ajouter employes</a>
+						</li>
+					</ul>
+				</li>
+				<li id="menu-academico"><a href="afficherSoins.php"><i class="fa fa-table"></i> <span> Soins</span> <span class="fa fa-angle-right" style="float: right"></span></a>
+					<ul id="menu-academico-sub">
+						<li id="menu-academico-avaliacoes"><a href="../elyes/BO/views/afficherSoins.php">Afficher les soins</a>
+						</li>
+						<li id="menu-academico-avaliacoes"><a href="../elyes/BO/views/ajoutSoins.html">Ajouter soins</a>
+						</li>
+					</ul>
+				</li>
+
 								  </ul>
 								</div>
 							  </div>

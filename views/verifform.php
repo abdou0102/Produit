@@ -23,11 +23,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <script src="js/amcharts.js"></script>	
 <script src="js/serial.js"></script>	
 <script src="js/light.js"></script>	
-<!-- //lined-icons -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.1.135/jspdf.min.js"></script><!-- //lined-icons -->
 <script src="js/jquery-1.10.2.min.js"></script>
-	
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.1.135/jspdf.min.js"></script><
    <!--pie-chart--->
 <script src="js/pie-chart.js" type="text/javascript"></script>
  <script type="text/javascript">
@@ -103,7 +102,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 			<div> 
 				<div >
 		    	<h4>
-				<a href="indexb.php">Home >Categorie </a>
+				<a href="indexb.php">Home >Produit </a>
 				
 				<span>Affichage</span>
 				</h4>
@@ -115,54 +114,121 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		</div>
 </div><br>
 
-
-<?PHP
-include "../core/categorieC.php";
-$categorie1C=new categorieC();
-$listeCategories=$categorie1C->afficherCategories();
-
-?>
 <div class="container">
-	<div id="content">
-<table id="content" class="table">
-<tr>
-				<thead>
-					<tr>
-						<th>ID</th>
-						<th>Nom</th>
-						
-						<th colspan="2">Action</th>
-					
-					</tr>
-					
-				</thead>
 
-		
-</tr>
+<?php
+try
+{
+ $bdd = new PDO("mysql:host=localhost;dbname=crudproduit", "root", "");
+ $bdd ->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+}
+catch(Exception $e)
+{
+  die("Une érreur a été trouvé : " . $e->getMessage());
+}
+$bdd->query("SET NAMES UTF8");
 
-<?PHP
-foreach($listeCategories as $row){
-	?>
-<tr>
-	<td><p><?PHP echo $row['idC']; ?></p></td>
-	<td><p><?PHP echo $row['nomC']; ?></p></td>
-	<td>
-		<form method="POST" action="supprimerCategorie.php">
-			<input type="submit" name="supprimer" value="supprimer" class="btn btn-primary">
-			<input type="hidden" value="<?PHP echo $row['idC']; ?>" name="idC" class="btn btn-primary">
-		</form>
-	<a href="modifierCategorie.php?idC=<?PHP echo $row['idC']; ?>"class="btn btn-primary">
-	Modifier</a></td>
-</tr>
-	<?PHP
+if (isset($_GET["s"]) AND $_GET["s"] == "Rechercher")
+{
+ $_GET["terme"] = htmlspecialchars($_GET["terme"]); //pour sécuriser le formulaire contre les intrusions html
+ $terme = $_GET['terme'];
+ $terme = trim($terme); //pour supprimer les espaces dans la requête de l'internaute
+ $terme = strip_tags($terme); //pour supprimer les balises html dans la requête
+
+ if (isset($terme))
+ {
+  $terme = strtolower($terme);
+  $select_terme = $bdd->prepare("SELECT nom, categorie,prix ,image FROM produit WHERE nom LIKE ? OR categorie LIKE ?");
+  $select_terme->execute(array("%".$terme."%", "%".$terme."%"));
+ }
+ else
+ {
+  $message = "Vous devez entrer votre requete dans la barre de recherche";
+ }
 }
 ?>
-</table>
-		   </div>	
-	<a href="ajoutCategorie.html" class="btn btn-primary">Ajouter</a>
-	<button class="btn btn-primary" id="cmd">Generate PDF</button>
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta charset = "utf-8" >
+  <title>Les résultats de recherche</title>
+ </head>
+    <style>
+ .element {
+width: 250px; 
+height: 350px;
+margin:0px;
+position:relative;
+display:inline-block;
+vertical-align:top;    
+}
+div#columns figure {
+    display: inline-block;
+    background: #FEFEFE;
+    border: 2px solid #FAFAFA;
+    box-shadow: 0 1px 2px rgba(34, 25, 25, 0.4);
+    margin: 0 0px 15px;
+    -webkit-column-break-inside: avoid;
+    -moz-column-break-inside: avoid;
+    column-break-inside: avoid;
+    padding: 15px;
+    padding-bottom: 5px;
+    background: -webkit-linear-gradient(45deg, #FFF, #F9F9F9);
+    opacity: 1;
+    -webkit-transition: all .3s ease;
+    -moz-transition: all .3s ease;
+    -o-transition: all .3s ease;
+    transition: all .3s ease;
+}
 
-</div>
+#columns figure:hover{
+    -webkit-transform: scale(1.1);
+    -moz-transform:scale(1.1);
+    transform: scale(1.1);
+
+}
+#columns:hover figure:not(:hover) {
+    opacity: 0.4;
+}
+
+</style>
+ <body>
+  <?php
+  while($terme_trouve = $select_terme->fetch())
+  {
+  	  ?>  <div class="element" id="columns" >
+                            
+                        
+                            <figure>
+                                
+                                <div > <?php echo' <img  src="../images/'.base64_encode($terme_trouve['image'] ).'" height="200" width="200" class="img-thumnail" />'?> </div> 
+                                    
+                                      
+                                    
+                                 
+                                       <h4><?php echo $terme_trouve['nom']; ?></h4>
+                                       <p><?php echo $terme_trouve ['categorie']; ?></p>
+                                       <div  ><?php echo $terme_trouve['prix']; ?>DT</div>
+                                </figure>     
+                                        
+                            </div>
+                        
+                                
+                             
+                             
+                           
+                    
+
+
+                  <?php
+  
+  }
+  $select_terme->closeCursor();
+   ?>
+	
+	 
+	 </div>
+	 	  	
 <div class="sidebar-menu">
 					
 					<div class="logo">
@@ -177,7 +243,7 @@ foreach($listeCategories as $row){
                            <div class="menu">
 									<ul id="menu" >
 										<li><a href="indexb.php"><i class="fa fa-tachometer"></i> <span>Home</span></a></li>
-										 <li id="menu-academico" ><a href="#"><i class="fa fa-table"></i> <span> Gestion des Produits</span> <span class="fa fa-angle-right" style="float: right"></span></a>
+										<li id="menu-academico" ><a href="#"><i class="fa fa-table"></i> <span> Gestion des Produits</span> <span class="fa fa-angle-right" style="float: right"></span></a>
 										   <ul id="menu-academico-sub" >
 										   <li id="menu-academico-avaliacoes" ><a href="ajouterProduit.php">Ajouter Produit</a></li>
 											<li id="menu-academico-avaliacoes" ><a href="afficherProduit.php">Afficher Produits</a></li>
@@ -203,23 +269,6 @@ foreach($listeCategories as $row){
 
 										  </ul>
 									 </li>
-										<li id="menu-academico"><a><i class="fa fa-table"></i> <span> Employes</span> <span class="fa fa-angle-right" style="float: right"></span></a>
-					<ul id="menu-academico-sub">
-						<li id="menu-academico-avaliacoes"><a href="../elyes/BO/views/afficherEmploye.php">Afficher les employes</a>
-						</li>
-						<li id="menu-academico-avaliacoes"><a href="../elyes/BO/views/ajoutEmployeP.php">Ajouter employes</a>
-						</li>
-					</ul>
-				</li>
-				<li id="menu-academico"><a href="afficherSoins.php"><i class="fa fa-table"></i> <span> Soins</span> <span class="fa fa-angle-right" style="float: right"></span></a>
-					<ul id="menu-academico-sub">
-						<li id="menu-academico-avaliacoes"><a href="../elyes/BO/views/afficherSoins.php">Afficher les soins</a>
-						</li>
-						<li id="menu-academico-avaliacoes"><a href="../elyes/BO/views/ajoutSoins.html">Ajouter soins</a>
-						</li>
-					</ul>
-				</li>
-
 									<li><a href="#"><i class="lnr lnr-chart-bars"></i> <span>Forms</span> <span class="fa fa-angle-right" style="float: right"></span></a>
 									  <ul>
 										<li><a href="input.html"> Input</a></li>
@@ -229,29 +278,10 @@ foreach($listeCategories as $row){
 								  </ul>
 								</div>
 							  </div>
-							  <div class="clearfix"></div>	
-							</div>
+							  <div class="clearfix">
 	
-	<!--PDF-->
-<script>
-	$(function () {
-
-    var specialElementHandlers = {
-        '#editor': function (element,renderer) {
-            return true;
-        }
-    };
- $('#cmd').click(function () {
-        var doc = new jsPDF();
-        doc.fromHTML($('#content').html(), 15, 15, {
-            'width': 170,'elementHandlers': specialElementHandlers
-        });
-        doc.save('sample-file.pdf');
-    });  
-});
-</script>
-	
-	
+	</div>	
+							
 	
 	
 	
@@ -276,7 +306,31 @@ foreach($listeCategories as $row){
 											toggle = !toggle;
 										});
 							</script>
-<!--js -->
+	
+
+	
+	
+	
+	
+<script>
+	$(function () {
+
+    var specialElementHandlers = {
+        '#editor': function (element,renderer) {
+            return true;
+        }
+    };
+ $('#cmd').click(function () {
+        var doc = new jsPDF();
+        doc.fromHTML($('#content').html(), 15, 15, {
+            'width': 170,'elementHandlers': specialElementHandlers
+        });
+        doc.save('sample-file.pdf');
+    });  
+});
+</script>
+	
+	
 <script src="js/jquery.nicescroll.js"></script>
 <script src="js/scripts.js"></script>
 <!-- Bootstrap Core JavaScript -->
@@ -372,9 +426,6 @@ foreach($listeCategories as $row){
 	});
 
 	</script>
-	
-
-
 <!-- /real-time -->
 <script src="js/jquery.fn.gantt.js"></script>
     <script>

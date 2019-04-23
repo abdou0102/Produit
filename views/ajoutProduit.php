@@ -12,7 +12,7 @@ var_dump($employe1);
 //Partie3
 $produit1C=new produitC();
 $produit1C->ajouterProduit($produit1);
-header('Location: afficherProduit.php');
+header('Location: envoyer_des_mails.php');
 	
 }else{
 	echo "vérifier les champs";
